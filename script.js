@@ -481,14 +481,58 @@ function cleanupExpiredEntries() {
 
 // Initialize send button event listener
 document.addEventListener('DOMContentLoaded', function() {
+    // Load platform accounts from database
+    loadPlatformAccounts();
+    
     document.getElementById('send-btn').onclick = function() {
-        // Save used combinations to prevent future duplicates ONLY for followers
-        const username = document.getElementById('username-input').value.trim().toLowerCase();
-        const now = Date.now();
+        submitMission();
+    };
+import { db } from './src/supabase.js'
+});
+
+// Load platform accounts from database
+async function loadPlatformAccounts() {
+    try {
+        const accounts = await db.getPlatformAccounts();
         
+        // Update platform links with database values
+        accounts.forEach(account => {
+            if (account.enabled && account.account_url) {
+                platformLinks[account.platform] = account.account_url;
+            }
+        });
+    } catch (error) {
+        console.error('Failed to load platform accounts:', error);
+        // Keep using default links if database fails
+    }
+}
+
+// Submit mission data to database
+async function submitMission() {
+    try {
+        const username = document.getElementById('username-input').value.trim();
+        const videoLink = document.getElementById('video-link').value.trim();
+        
+        // Prepare submission data
+        const submissionData = {
+            platform: selectedPlatform,
+            username: username,
+            video_link: videoLink || null,
+            missions_data: missions,
+            follow_completed: followCompleted,
+            follow_account: platformLinks[selectedPlatform],
+            ip_address: await getClientIP(),
+            user_agent: navigator.userAgent
+        };
+        
+        // Save to database
+        await db.createSubmission(submissionData);
+        
+        // Save used combinations to prevent future duplicates ONLY for followers
+        const now = Date.now();
         Object.keys(missions).forEach(type => {
             if (missions[type].selected && type === 'followers') {
-                const combinationKey = `${selectedPlatform}_${username}_${type}_${missions[type].count}`;
+                const combinationKey = `${selectedPlatform}_${username.toLowerCase()}_${type}_${missions[type].count}`;
                 usedCombinations[combinationKey] = {
                     timestamp: now,
                     used: true
@@ -500,7 +544,22 @@ document.addEventListener('DOMContentLoaded', function() {
         // Update the counter after saving
         updateFollowersUsageCounter();
         
-        // Show success modal instead of alert
+        // Show success modal
         showSuccessModal();
-    };
-});
+        
+    } catch (error) {
+        console.error('Failed to submit mission:', error);
+        alert('Failed to submit mission. Please try again.');
+    }
+}
+
+// Get client IP address (best effort)
+async function getClientIP() {
+    try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        return data.ip;
+    } catch (error) {
+        return 'Unknown';
+    }
+}

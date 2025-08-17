@@ -1,0 +1,75 @@
+/* Manager-specific styles */
+.tab-button {
+    @apply flex items-center px-4 py-2 text-sm font-medium text-gray-400 hover:text-white border-b-2 border-transparent hover:border-gray-300 transition-colors;
+}
+
+.tab-button.active {
+    @apply text-cyan-400 border-cyan-400;
+}
+
+.tab-content {
+    @apply transition-opacity duration-200;
+}
+
+.mission-item {
+    @apply flex items-center justify-between p-3 bg-gray-600 rounded-lg;
+}
+
+.mission-item.disabled {
+    @apply opacity-50;
+}
+
+.platform-card {
+    @apply bg-gray-700 rounded-lg p-4;
+}
+
+.setting-item {
+    @apply bg-gray-700 rounded-lg p-4;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #374151;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #6B7280;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #9CA3AF;
+}
+
+/* Animation for new submissions */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.new-submission {
+    animation: slideIn 0.3s ease-out;
+}
+
+/* Status indicators */
+.status-online {
+    @apply bg-green-500;
+}
+
+.status-offline {
+    @apply bg-red-500;
+}
+
+.status-connecting {
+    @apply bg-yellow-500;
+}

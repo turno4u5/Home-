@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turno Management Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="manager-styles.css">
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Header -->
+    <header class="bg-gray-800 border-b border-gray-700 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-lg flex items-center justify-center text-lg mr-3">
+                        🚀
+                    </div>
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                        Turno Manager
+                    </h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="connection-status" class="flex items-center">
+                        <div class="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                        <span class="text-sm text-gray-300">Connected</span>
+                    </div>
+                    <div class="text-sm text-gray-400" id="last-updated">
+                        Last updated: Never
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Navigation Tabs -->
+        <div class="mb-8">
+            <nav class="flex space-x-8">
+                <button onclick="showTab('submissions')" id="tab-submissions" class="tab-button active">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    User Submissions
+                    <span id="submissions-count" class="ml-2 bg-cyan-500 text-white text-xs px-2 py-1 rounded-full">0</span>
+                </button>
+                <button onclick="showTab('missions')" id="tab-missions" class="tab-button">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
+                    Mission Control
+                </button>
+                <button onclick="showTab('accounts')" id="tab-accounts" class="tab-button">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                    Platform Accounts
+                </button>
+                <button onclick="showTab('settings')" id="tab-settings" class="tab-button">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    Settings
+                </button>
+            </nav>
+        </div>
+
+        <!-- User Submissions Tab -->
+        <div id="submissions-tab" class="tab-content">
+            <div class="bg-gray-800 rounded-lg p-6 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold">User Submissions</h2>
+                    <div class="flex items-center space-x-4">
+                        <button onclick="refreshSubmissions()" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm font-medium">
+                            <svg class="w-4 h-4 mr-2 inline" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                            </svg>
+                            Refresh
+                        </button>
+                        <button onclick="exportSubmissions()" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-sm font-medium">
+                            <svg class="w-4 h-4 mr-2 inline" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            Export CSV
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-700">
+                            <tr>
+                                <th class="px-4 py-3 text-left">Time</th>
+                                <th class="px-4 py-3 text-left">Platform</th>
+                                <th class="px-4 py-3 text-left">Username</th>
+                                <th class="px-4 py-3 text-left">Video Link</th>
+                                <th class="px-4 py-3 text-left">Missions</th>
+                                <th class="px-4 py-3 text-left">Follow Status</th>
+                                <th class="px-4 py-3 text-left">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="submissions-table" class="divide-y divide-gray-700">
+                            <!-- Submissions will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mission Control Tab -->
+        <div id="missions-tab" class="tab-content hidden">
+            <div class="bg-gray-800 rounded-lg p-6 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold">Mission Configuration</h2>
+                    <button onclick="showAddMissionModal()" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-sm font-medium">
+                        <svg class="w-4 h-4 mr-2 inline" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Add Mission
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Followers Missions -->
+                    <div class="bg-gray-700 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold mb-4 text-purple-400">Followers</h3>
+                        <div id="followers-missions" class="space-y-2">
+                            <!-- Followers missions will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Likes Missions -->
+                    <div class="bg-gray-700 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold mb-4 text-red-400">Likes</h3>
+                        <div id="likes-missions" class="space-y-2">
+                            <!-- Likes missions will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Comments Missions -->
+                    <div class="bg-gray-700 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold mb-4 text-green-400">Comments</h3>
+                        <div id="comments-missions" class="space-y-2">
+                            <!-- Comments missions will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Platform Accounts Tab -->
+        <div id="accounts-tab" class="tab-content hidden">
+            <div class="bg-gray-800 rounded-lg p-6 mb-6">
+                <h2 class="text-2xl font-bold mb-4">Platform Accounts</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="platform-accounts">
+                    <!-- Platform accounts will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settings-tab" class="tab-content hidden">
+            <div class="bg-gray-800 rounded-lg p-6 mb-6">
+                <h2 class="text-2xl font-bold mb-4">Global Settings</h2>
+                
+                <div class="space-y-6" id="settings-container">
+                    <!-- Settings will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Mission Modal -->
+    <div id="add-mission-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4">
+            <h3 class="text-xl font-bold mb-4">Add New Mission</h3>
+            <form id="add-mission-form">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-2">Mission Type</label>
+                    <select id="mission-type" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2">
+                        <option value="followers">Followers</option>
+                        <option value="likes">Likes</option>
+                        <option value="comments">Comments</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-2">Count</label>
+                    <input type="number" id="mission-count" min="1" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2" required>
+                </div>
+                <div class="mb-6">
+                    <label class="flex items-center">
+                        <input type="checkbox" id="mission-enabled" checked class="mr-2">
+                        <span class="text-sm">Enabled</span>
+                    </label>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="hideAddMissionModal()" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg">
+                        Add Mission
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-gray-800 rounded-lg p-8 text-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto mb-4"></div>
+            <p class="text-lg">Loading Management Dashboard...</p>
+            <p class="text-sm text-gray-400 mt-2">Connecting to database...</p>
+        </div>
+    </div>
+
+    <script type="module" src="manager.js"></script>
+</body>
+</html>
