@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+    min-height: 100vh;
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.neon-glow {
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.2), 0 0 60px rgba(0, 255, 255, 0.1);
+}
+
+.platform-card {
+    cursor: pointer;
+}
+
+.platform-card:hover {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.platform-card.selected {
+    border-color: #00d4ff;
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+}
+
+.mission-button {
+    background: linear-gradient(135deg, #1e40af, #3b82f6);
+}
+
+.mission-button:hover {
+    box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+}
+
+.mission-button.completed {
+    background: linear-gradient(135deg, #059669, #10b981);
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+}
+
+.action-button {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.action-button:hover {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.5);
+}
+
+.action-button.completed {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: rgba(16, 185, 129, 0.5);
+    color: #10b981;
+}
+
+.liquid-send-button {
+    background: linear-gradient(45deg, #00ffff, #0080ff, #00ffff);
+    box-shadow: 0 0 40px rgba(0, 255, 255, 0.6), 0 0 80px rgba(0, 128, 255, 0.4);
+}
+
+.progress-bar {
+    background: rgba(59, 130, 246, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    background: linear-gradient(90deg, #3b82f6, #60a5fa);
+    height: 100%;
+}
+
