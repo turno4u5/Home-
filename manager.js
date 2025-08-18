@@ -25,6 +25,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function initializeManager() {
     try {
+        // Test database connection first
+        const { data: testData, error: testError } = await supabase
+            .from('missions')
+            .select('count(*)')
+            .limit(1)
+        
+        if (testError) {
+            console.error('Database connection test failed:', testError)
+            throw new Error(`Database error: ${testError.message}`)
+        }
+
         // Load initial data
         await Promise.all([
             loadSubmissions(),
