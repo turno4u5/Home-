@@ -1,3 +1,5 @@
+import { db } from './src/supabase.js';
+
 let selectedPlatform = '';
 let missions = {
     followers: { selected: false, count: 0, completed: 0 },
@@ -487,8 +489,16 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('send-btn').onclick = function() {
         submitMission();
     };
-import { db } from './src/supabase.js'
 });
+
+// Make functions globally available for HTML onclick handlers
+window.selectPlatform = selectPlatform;
+window.followAccount = followAccount;
+window.handleAlreadyFollowed = handleAlreadyFollowed;
+window.closeWarningModal = closeWarningModal;
+window.closeDuplicateModal = closeDuplicateModal;
+window.closeSuccessModal = closeSuccessModal;
+window.selectMission = selectMission;
 
 // Load platform accounts from database
 async function loadPlatformAccounts() {
