@@ -5,6 +5,7 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
 if (!supabaseUrl || !supabaseAnonKey) {
   console.error('Missing Supabase environment variables. Please set up your Supabase connection.')
+  throw new Error('Supabase configuration missing')
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)

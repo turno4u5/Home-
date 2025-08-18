@@ -10,6 +10,11 @@ let settings = []
 // Initialize the manager
 document.addEventListener('DOMContentLoaded', async () => {
     try {
+        // Check if Supabase is configured
+        if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
+            throw new Error('Supabase not configured. Please set up your Supabase connection.');
+        }
+        
         await initializeManager()
         hideLoadingOverlay()
     } catch (error) {
@@ -19,19 +24,24 @@ document.addEventListener('DOMContentLoaded', async () => {
 })
 
 async function initializeManager() {
-    // Load initial data
-    await Promise.all([
-        loadSubmissions(),
-        loadMissions(),
-        loadPlatformAccounts(),
-        loadSettings()
-    ])
+    try {
+        // Load initial data
+        await Promise.all([
+            loadSubmissions(),
+            loadMissions(),
+            loadPlatformAccounts(),
+            loadSettings()
+        ])
 
-    // Setup real-time subscriptions
-    setupRealtimeSubscriptions()
+        // Setup real-time subscriptions
+        setupRealtimeSubscriptions()
 
-    // Update last updated time
-    updateLastUpdatedTime()
+        // Update last updated time
+        updateLastUpdatedTime()
+    } catch (error) {
+        console.error('Error during initialization:', error)
+        throw error
+    }
 }
 
 function hideLoadingOverlay() {
